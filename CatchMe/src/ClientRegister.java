@@ -6,7 +6,6 @@ import java.net.Socket;
 
 public class ClientRegister extends JFrame {
     static String info;
-    int test=0;
 
     private JPanel mainPanel;
     private JButton button;
