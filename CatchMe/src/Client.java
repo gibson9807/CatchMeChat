@@ -1,10 +1,8 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
@@ -26,28 +24,29 @@ public class Client extends JFrame {
     DataOutputStream dout;
     DefaultListModel dlm;
 
-    public Client(String i, Socket s,String title) {
+    public Client(String id, Socket socket, String title) {
         super(title);
-        ID=i;
-        try {
-            //Initialization of GUI components
-            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            this.setContentPane(mainPanel);
-            this.pack();
-            sendButton.addActionListener(this::sendButtonactionPerformed);
-
-
+        ID=id;
+        initializeGuiComponents();
+        try{
             dlm=new DefaultListModel();
             userList.setModel(dlm);
-            labelName.setText(i);
-            din=new DataInputStream(s.getInputStream());
-            dout=new DataOutputStream(s.getOutputStream());
+            labelName.setText(id);
+            din=new DataInputStream(socket.getInputStream());
+            dout=new DataOutputStream(socket.getOutputStream());
             new Read().start();
 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
 
+    private void initializeGuiComponents() {
+        //Initialization of GUI components
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setContentPane(mainPanel);
+        this.pack();
+        sendButton.addActionListener(this::sendButtonActionPerformed);
     }
 
     private void formWindowClosing(java.awt.event.WindowEvent evt){
@@ -60,19 +59,17 @@ public class Client extends JFrame {
         }
     }
 
-
-    public void sendButtonactionPerformed(ActionEvent e) {
+    public void sendButtonActionPerformed(ActionEvent e) {
         try {
-            String m = sendText.getText(), mm = m;
-            String CI = clientID;
-            if (!clientID.isEmpty()) {
-                m = "PrivateMsg" + CI + ":" + mm;
-                dout.writeUTF(m);
+            String message = sendText.getText(), mm = message;
+            String clientID = this.clientID;
+            if (!this.clientID.isEmpty()) {
+                message = "PrivateMsg" + clientID + ":" + mm;
+                dout.writeUTF(message);
                 sendText.setText("");
-                msgBox.append("< TY do " + CI + " > " + mm + "\n");
-
+                msgBox.append("< TY do " + clientID + " > " + mm + "\n");
             } else {
-                dout.writeUTF(m);
+                dout.writeUTF(message);
                 sendText.setText("");
                 msgBox.append("< TY do wszystkich > " + mm + "\n");
             }
@@ -97,16 +94,13 @@ public class Client extends JFrame {
                                 dlm.addElement(u);
                             }
                         }
-
                     } else {
                         msgBox.append("" + m + "\n");
                     }
                 } catch (Exception ex) {
                     break;
                 }
-
             }
         }
     }
-
 }
