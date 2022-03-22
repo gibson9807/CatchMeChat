@@ -83,11 +83,13 @@ public class Client extends JFrame {
         public void run() {
             while (true) {
                 try {
-                    String m = din.readUTF();
-                    if (m.contains(":;.,/=")) {
-                        m = m.substring(6);
+                    String message = din.readUTF();
+                    if (message.startsWith("user:")){
+                        System.out.println("sda");
+                    }else if (message.contains(":;.,/=")) {
+                        message = message.substring(6);
                         dlm.clear();
-                        StringTokenizer st = new StringTokenizer(m, ",");
+                        StringTokenizer st = new StringTokenizer(message, ",");
                         while (st.hasMoreTokens()) {
                             String u = st.nextToken();
                             if (!ID.equals(u)) {
@@ -95,7 +97,7 @@ public class Client extends JFrame {
                             }
                         }
                     } else {
-                        msgBox.append("" + m + "\n");
+                        msgBox.append("" + message + "\n");
                     }
                 } catch (Exception ex) {
                     break;
