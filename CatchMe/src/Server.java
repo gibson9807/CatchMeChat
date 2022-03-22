@@ -40,13 +40,17 @@ public class Server extends JFrame {
         try {
             serverSocket = new ServerSocket(SOCKET_PORT);
             this.sStatus.setText("Serwer uruchomiony");
-            new ClientAccept().start();
+            //new ClientAccept().start();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    class ClientAccept extends Thread {
+    public void msgBoxAppend(String str){
+        msgBox.append(str);
+    }
+
+    /*class ClientAccept extends Thread {
         Socket socket;
         User newUser;
 
@@ -96,8 +100,8 @@ public class Server extends JFrame {
             }
         }
     }
-
-    class MsgRead extends Thread {
+*/
+    /*public class MsgRead extends Thread {
         Socket socket;
         User user;
 
@@ -158,8 +162,8 @@ public class Server extends JFrame {
             }
         }
     }
-
-    class PrepareClientList extends Thread {
+*/
+   /* class PrepareClientList extends Thread {
         public void run() {
             try {
                 String ids = "";
@@ -187,7 +191,7 @@ public class Server extends JFrame {
             }
         }
     }
-
+*/
     public static void main(String[] args) {
         JFrame frame = new Server("CatchMe Server");
         frame.setVisible(true);
