@@ -2,6 +2,7 @@ package Model.Server;
 
 import Model.User;
 
+import javax.swing.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -11,10 +12,18 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class ClientAccept extends Thread {
-    Socket socket;
-    User newUser;
-    ServerSocket serverSocket;
-    HashMap clientsMap;
+    private final static int SOCKET_PORT = 8080;
+    private final  ServerSocket serverSocket;
+    private final HashMap clientsMap;
+    private final JTextArea msgBox;
+    private Socket socket;
+    private User newUser;
+
+    public ClientAccept(final JTextArea msgBox) throws IOException {
+        this.msgBox = msgBox;
+        serverSocket = new ServerSocket(SOCKET_PORT);
+        clientsMap = new HashMap();
+    }
 
     @Override
     public void run() {
@@ -28,10 +37,11 @@ public class ClientAccept extends Thread {
                     dout.writeUTF("Jesteś już zarejestrowany");
                 } else {
                     clientsMap.put(newUser, socket);
-                    //msgBox.append(newUser.getName() + " dołączył(a)! \n");
+                    msgBox.append(newUser.getName() + " dołączył(a)! \n");
                     DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
                     sendListUser(newUser);
-                    new MsgRead(socket, newUser).start();
+                    new MsgRead(socket, newUser, msgBox).start();
+                    socket.close();
                 }
             }
         } catch (Exception ex) {
@@ -57,8 +67,8 @@ public class ClientAccept extends Thread {
             new DataOutputStream(((Socket) clientsMap.get(key)).getOutputStream()).writeUTF("user:" + newUser.getName());
         } catch (Exception ex) {
             clientsMap.remove(key);
-            //msgBox.append(key + ": usunięte!");
-            new PrepareClientList().start();
+            msgBox.append(key + ": usunięte!");
+            new PrepareClientList(clientsMap, msgBox).start();
         }
     }
 }

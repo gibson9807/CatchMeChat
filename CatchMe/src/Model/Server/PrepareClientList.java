@@ -1,5 +1,8 @@
 package Model.Server;
 
+import Model.User;
+
+import javax.swing.*;
 import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.HashMap;
@@ -8,19 +11,23 @@ import java.util.Set;
 
 public class PrepareClientList extends Thread {
 
-    private HashMap<Object, Object> clientsMap;
+    private final HashMap<User, Object> clientsMap;
+
+    public PrepareClientList(final HashMap<User, Object> clientsMap, final JTextArea msgBox) {
+        this.clientsMap = clientsMap;
+    }
 
     public void run() {
         try {
-            String ids = "";
+            StringBuilder ids = new StringBuilder();
             Set k = clientsMap.keySet();
             Iterator itr = k.iterator();
             while (itr.hasNext()) {
                 String key = (String) itr.next();
-                ids += key + ",";
+                ids. append(key).append(",");
             }
             if (ids.length() != 0)
-                ids = ids.substring(0, ids.length() - 1);
+                ids = new StringBuilder(ids.substring(0, ids.length() - 1));
             itr = k.iterator();
             while (itr.hasNext()) {
                 String key = (String) itr.next();

@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -85,7 +86,11 @@ public class Client extends JFrame {
                 try {
                     String message = din.readUTF();
                     if (message.startsWith("user:")){
-                        System.out.println("sda");
+                        System.out.println("sda" + message.substring(5));
+
+                        DefaultListModel<String> model = new DefaultListModel<>();
+                        userList.setModel(model);
+                        model.addElement(message.substring(5));
                     }else if (message.contains(":;.,/=")) {
                         message = message.substring(6);
                         dlm.clear();

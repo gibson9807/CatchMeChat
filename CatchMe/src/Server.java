@@ -1,3 +1,4 @@
+import Model.Server.ClientAccept;
 import Model.User;
 
 import javax.swing.*;
@@ -38,17 +39,14 @@ public class Server extends JFrame {
     private void startServer() {
         //Server features
         try {
-            serverSocket = new ServerSocket(SOCKET_PORT);
+            //serverSocket = new ServerSocket(SOCKET_PORT);
             this.sStatus.setText("Serwer uruchomiony");
-            //new ClientAccept().start();
+            new ClientAccept(msgBox).start();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void msgBoxAppend(String str){
-        msgBox.append(str);
-    }
 
     /*class ClientAccept extends Thread {
         Socket socket;
