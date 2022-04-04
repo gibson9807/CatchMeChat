@@ -1,16 +1,9 @@
 import Model.Server.ClientAccept;
-import Model.User;
 
 import javax.swing.*;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.StringTokenizer;
 
 public class Server extends JFrame {
     private final static int SOCKET_PORT = 8080;
@@ -37,9 +30,7 @@ public class Server extends JFrame {
     }
 
     private void startServer() {
-        //Server features
         try {
-            //serverSocket = new ServerSocket(SOCKET_PORT);
             this.sStatus.setText("Serwer uruchomiony");
             new ClientAccept(msgBox).start();
         } catch (IOException e) {

@@ -23,14 +23,14 @@ public class PrepareClientList extends Thread {
             Set k = clientsMap.keySet();
             Iterator itr = k.iterator();
             while (itr.hasNext()) {
-                String key = (String) itr.next();
-                ids. append(key).append(",");
+                User key = (User) itr.next();
+                ids.append(key).append(",");
             }
             if (ids.length() != 0)
                 ids = new StringBuilder(ids.substring(0, ids.length() - 1));
             itr = k.iterator();
             while (itr.hasNext()) {
-                String key = (String) itr.next();
+                User key = (User) itr.next();
                 try {
                     new DataOutputStream(((Socket) clientsMap.get(key)).getOutputStream()).writeUTF(":;.,/=" + ids);
                 } catch (Exception ex) {

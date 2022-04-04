@@ -71,7 +71,6 @@ public class MsgRead extends Thread {
             new DataOutputStream(((Socket) clientsMap.get(key)).getOutputStream()).writeUTF(str);
         } catch (Exception ex) {
             clientsMap.remove(key);
-            //msgBox.append(key + ": usunięte!");
             new PrepareClientList(clientsMap, msgBox).start();
         }
     }
