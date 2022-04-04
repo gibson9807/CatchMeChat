@@ -14,15 +14,14 @@ import java.util.Set;
 public class ClientAccept extends Thread {
     private final static int SOCKET_PORT = 8080;
     private final  ServerSocket serverSocket;
-    private final HashMap clientsMap;
+    private final HashMap<User, Object> clientsMap;
     private final JTextArea msgBox;
     private Socket socket;
-    private User newUser;
 
     public ClientAccept(final JTextArea msgBox) throws IOException {
         this.msgBox = msgBox;
         serverSocket = new ServerSocket(SOCKET_PORT);
-        clientsMap = new HashMap();
+        clientsMap = new HashMap<>();
     }
 
     @Override
@@ -30,7 +29,7 @@ public class ClientAccept extends Thread {
         try {
             while (true) {
                 socket = serverSocket.accept();
-                newUser = createNewUser(socket);
+                User newUser = createNewUser(socket);
 
                 if (clientsMap.containsKey(newUser)) {
                     DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
@@ -39,12 +38,13 @@ public class ClientAccept extends Thread {
                     clientsMap.put(newUser, socket);
                     msgBox.append(newUser.getName() + " dołączył(a)! \n");
                     DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
-                    sendListUser(newUser);
+                    sendListUser(newUser, dout);
                     new MsgRead(socket, newUser, msgBox).start();
+                    System.out.println("client accept " + newUser + " ----- " + socket);
                     socket.close();
                 }
             }
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
@@ -54,21 +54,21 @@ public class ClientAccept extends Thread {
         return new User(userName);
     }
 
-    private void sendListUser(final User newUser) {
-        Set clientKeySet = clientsMap.keySet();
-        for (final Object o : clientKeySet) {
-            User key = (User) o;
-            createDataOutputStreamForClientMap(key, newUser);
+    private void sendListUser(final User newUser, final DataOutputStream dout) throws IOException {
+        Set<User> clientKeySet = clientsMap.keySet();
+        for (User o : clientKeySet) {
+            dout.writeUTF("user:" + newUser.getName());
         }
     }
 
-    private void createDataOutputStreamForClientMap(User key, User newUser) {
+    /*private void createDataOutputStreamForClientMap(User key, User newUser) {
         try {
-            new DataOutputStream(((Socket) clientsMap.get(key)).getOutputStream()).writeUTF("user:" + newUser.getName());
-        } catch (Exception ex) {
+            new DataOutputStream(((Socket) clientsMap.get(key)).getOutputStream()).writeUTF();
+        } catch (IOException e) {
+            e.printStackTrace();
             clientsMap.remove(key);
             msgBox.append(key + ": usunięte!");
             new PrepareClientList(clientsMap, msgBox).start();
         }
-    }
+    }*/
 }

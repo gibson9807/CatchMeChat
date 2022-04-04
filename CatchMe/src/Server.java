@@ -2,8 +2,6 @@ import Model.Server.ClientAccept;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.util.HashMap;
 
 public class Server extends JFrame {
     private final static int SOCKET_PORT = 8080;
@@ -13,8 +11,8 @@ public class Server extends JFrame {
     private JLabel sStatus;
     private JTextArea msgBox;
 
-    ServerSocket serverSocket;
-    HashMap clientsMap = new HashMap();
+ /*   ServerSocket serverSocket;
+    HashMap clientsMap = new HashMap();*/
 
     public Server(String title) {
         super(title);

@@ -4,6 +4,7 @@ import Model.User;
 
 import javax.swing.*;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -18,29 +19,27 @@ public class PrepareClientList extends Thread {
     }
 
     public void run() {
-        try {
-            StringBuilder ids = new StringBuilder();
-            Set k = clientsMap.keySet();
-            Iterator itr = k.iterator();
-            while (itr.hasNext()) {
-                User key = (User) itr.next();
-                ids.append(key).append(",");
-            }
-            if (ids.length() != 0)
-                ids = new StringBuilder(ids.substring(0, ids.length() - 1));
-            itr = k.iterator();
-            while (itr.hasNext()) {
-                User key = (User) itr.next();
-                try {
-                    new DataOutputStream(((Socket) clientsMap.get(key)).getOutputStream()).writeUTF(":;.,/=" + ids);
-                } catch (Exception ex) {
-                    clientsMap.remove(key);
-                    //msgBox.append(key + ": usunięte!");
+        StringBuilder ids = new StringBuilder();
+        Set<User> k = clientsMap.keySet();
+        Iterator<User> itr = k.iterator();
 
-                }
+        while (itr.hasNext()) {
+            User key = itr.next();
+            ids.append(key).append(",");
+        }
+
+        if (ids.length() != 0)
+            ids = new StringBuilder(ids.substring(0, ids.length() - 1));
+        itr = k.iterator();
+
+        while (itr.hasNext()) {
+            User key = (User) itr.next();
+            try {
+                new DataOutputStream(((Socket) clientsMap.get(key)).getOutputStream()).writeUTF(":;.,/=" + ids);
+            } catch (IOException e) {
+                e.printStackTrace();
+                clientsMap.remove(key);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
     }
 }

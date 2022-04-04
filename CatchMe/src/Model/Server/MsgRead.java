@@ -5,6 +5,7 @@ import Model.User;
 import javax.swing.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,9 +35,9 @@ public class MsgRead extends Thread {
                     msgBox.append(user + ": usunięty(a)! \n");
                     new PrepareClientList(clientsMap, msgBox).start();
                     Set<User> clientsSet = clientsMap.keySet();
-                    Iterator itr = clientsSet.iterator();
+                    Iterator<User> itr = clientsSet.iterator();
                     while (itr.hasNext()) {
-                        User key = (User) itr.next();
+                        User key = itr.next();
                         if (key.equalsIgnoreCase(user)) {
                             createDataOutputStreamForClientMap(key, inputStreamText);
                         }
@@ -50,10 +51,10 @@ public class MsgRead extends Thread {
                     createDataOutputStreamForClientMap(id, str);
 
                 } else {
-                    Set clientKeySet = clientsMap.keySet();
-                    Iterator itr = clientKeySet.iterator();
+                    Set<User> clientKeySet = clientsMap.keySet();
+                    Iterator<User> itr = clientKeySet.iterator();
                     while (itr.hasNext()) {
-                        User key = (User) itr.next();
+                        User key = itr.next();
                         if (key.equalsIgnoreCase(user)) {
                             String str = "< " + user.getName() + " do wszystkich >" + inputStreamText;
                             createDataOutputStreamForClientMap(key, str);
@@ -69,7 +70,8 @@ public class MsgRead extends Thread {
     private void createDataOutputStreamForClientMap(User key, String str) {
         try {
             new DataOutputStream(((Socket) clientsMap.get(key)).getOutputStream()).writeUTF(str);
-        } catch (Exception ex) {
+        } catch (IOException e) {
+            e.printStackTrace();
             clientsMap.remove(key);
             new PrepareClientList(clientsMap, msgBox).start();
         }
