@@ -1,15 +1,7 @@
-import Model.User;
+import Model.Server.ClientAccept;
 
 import javax.swing.*;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.StringTokenizer;
 
 public class Server extends JFrame {
     private final static int SOCKET_PORT = 8080;
@@ -19,8 +11,8 @@ public class Server extends JFrame {
     private JLabel sStatus;
     private JTextArea msgBox;
 
-    ServerSocket serverSocket;
-    HashMap clientsMap = new HashMap();
+ /*   ServerSocket serverSocket;
+    HashMap clientsMap = new HashMap();*/
 
     public Server(String title) {
         super(title);
@@ -36,17 +28,16 @@ public class Server extends JFrame {
     }
 
     private void startServer() {
-        //Server features
         try {
-            serverSocket = new ServerSocket(SOCKET_PORT);
             this.sStatus.setText("Serwer uruchomiony");
-            new ClientAccept().start();
+            new ClientAccept(msgBox).start();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    class ClientAccept extends Thread {
+
+    /*class ClientAccept extends Thread {
         Socket socket;
         User newUser;
 
@@ -96,8 +87,8 @@ public class Server extends JFrame {
             }
         }
     }
-
-    class MsgRead extends Thread {
+*/
+    /*public class MsgRead extends Thread {
         Socket socket;
         User user;
 
@@ -158,8 +149,8 @@ public class Server extends JFrame {
             }
         }
     }
-
-    class PrepareClientList extends Thread {
+*/
+   /* class PrepareClientList extends Thread {
         public void run() {
             try {
                 String ids = "";
@@ -187,7 +178,7 @@ public class Server extends JFrame {
             }
         }
     }
-
+*/
     public static void main(String[] args) {
         JFrame frame = new Server("CatchMe Server");
         frame.setVisible(true);
