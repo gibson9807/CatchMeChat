@@ -39,7 +39,7 @@ public class ClientRegister extends JFrame {
                 new Client(id, socket, "Klient " + id).setVisible(true);
                 this.dispose();
 
-                
+
             }
         } catch (Exception ex) {
             ex.printStackTrace();

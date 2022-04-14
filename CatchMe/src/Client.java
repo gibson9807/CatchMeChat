@@ -14,26 +14,26 @@ public class Client extends JFrame {
     private JTextField sendText;
     private JButton sendButton;
     private JTextArea msgBox;
- //   private JTextPane userList;
+    //   private JTextPane userList;
     private JLabel labelName;
     private JButton selectAllButton;
     private JList userList;
 
-    String ID,clientID="";
+    String ID, clientID = "";
     DataInputStream din;
     DataOutputStream dout;
     DefaultListModel dlm;
 
     public Client(String id, Socket socket, String title) {
         super(title);
-        ID=id;
+        ID = id;
         initializeGuiComponents();
-        try{
-            dlm=new DefaultListModel();
+        try {
+            dlm = new DefaultListModel();
             userList.setModel(dlm);
             labelName.setText(id);
-            din=new DataInputStream(socket.getInputStream());
-            dout=new DataOutputStream(socket.getOutputStream());
+            din = new DataInputStream(socket.getInputStream());
+            dout = new DataOutputStream(socket.getOutputStream());
             new Read().start();
 
         } catch (Exception ex) {
@@ -49,13 +49,13 @@ public class Client extends JFrame {
         sendButton.addActionListener(this::sendButtonActionPerformed);
     }
 
-    private void formWindowClosing(java.awt.event.WindowEvent evt){
-        String i="closedWindow";
-        try{
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {
+        String i = "closedWindow";
+        try {
             dout.writeUTF(i);
             this.dispose();
-        }catch(IOException ex){
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE,null,ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -74,6 +74,7 @@ public class Client extends JFrame {
                 msgBox.append("< TY do wszystkich > " + mm + "\n");
             }
         } catch (Exception ex) {
+            ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Taki użytkownik nie istnieje");
         }
     }
@@ -83,11 +84,17 @@ public class Client extends JFrame {
         public void run() {
             while (true) {
                 try {
-                    String m = din.readUTF();
-                    if (m.contains(":;.,/=")) {
-                        m = m.substring(6);
+                    String message = din.readUTF();
+                    if (message.startsWith("user:")) {
+                        System.out.println("sda" + message.substring(5));
+
+                        DefaultListModel<String> model = new DefaultListModel<>();
+                        userList.setModel(model);
+                        model.addElement(message.substring(5));
+                    } else if (message.contains(":;.,/=")) {
+                        message = message.substring(6);
                         dlm.clear();
-                        StringTokenizer st = new StringTokenizer(m, ",");
+                        StringTokenizer st = new StringTokenizer(message, ",");
                         while (st.hasMoreTokens()) {
                             String u = st.nextToken();
                             if (!ID.equals(u)) {
@@ -95,7 +102,7 @@ public class Client extends JFrame {
                             }
                         }
                     } else {
-                        msgBox.append("" + m + "\n");
+                        msgBox.append("" + message + "\n");
                     }
                 } catch (Exception ex) {
                     break;
