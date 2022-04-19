@@ -29,17 +29,15 @@ public class ClientRegister extends JFrame {
         try {
             String id = idText.getText();
             Socket socket = new Socket("localhost", 8080);
-            //DataInputStream din = new DataInputStream(socket.getInputStream());
+           // DataInputStream din = new DataInputStream(socket.getInputStream());
             DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
             dout.writeUTF(id);
             String i = new DataInputStream(socket.getInputStream()).readUTF();
-            if (i.equals("Jesteś już zarejestrowany")) {
+            if (i.equals("AlreadyRegistered")) {
                 JOptionPane.showMessageDialog(this, "Jesteś już zarejestrowany\n");
             } else {
                 new Client(id, socket, "Klient " + id).setVisible(true);
                 this.dispose();
-
-
             }
         } catch (Exception ex) {
             ex.printStackTrace();

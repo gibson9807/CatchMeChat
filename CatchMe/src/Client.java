@@ -52,6 +52,7 @@ public class Client extends JFrame {
     private void formWindowClosing(java.awt.event.WindowEvent evt) {
         String i = "closedWindow";
         try {
+            System.out.println("WINDOW CLOSED test z Client");
             dout.writeUTF(i);
             this.dispose();
         } catch (IOException ex) {
@@ -80,18 +81,20 @@ public class Client extends JFrame {
     }
 
     class Read extends Thread {
-
+        DefaultListModel<String> model = new DefaultListModel<>();
         public void run() {
+           // System.out.println("RUN w Client");
             while (true) {
                 try {
+                  //  System.out.println("TRY w RUN w Client");
                     String message = din.readUTF();
+                    System.out.println("Message z Client: "+message);
                     if (message.startsWith("user:")) {
-                        System.out.println("sda" + message.substring(5));
-
-                        DefaultListModel<String> model = new DefaultListModel<>();
+                       // System.out.println("STARTS WITH USER: w Client");
                         userList.setModel(model);
-                        model.addElement(message.substring(5));
+                        model.addElement(message.substring(5)+"Test w Client");
                     } else if (message.contains(":;.,/=")) {
+                      // System.out.println("CONTAINS;,.;");
                         message = message.substring(6);
                         dlm.clear();
                         StringTokenizer st = new StringTokenizer(message, ",");
@@ -102,9 +105,11 @@ public class Client extends JFrame {
                             }
                         }
                     } else {
+                       // System.out.println("ELSE w Client");
                         msgBox.append("" + message + "\n");
                     }
                 } catch (Exception ex) {
+//                    ex.printStackTrace();
                     break;
                 }
             }

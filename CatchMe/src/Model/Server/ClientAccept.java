@@ -14,7 +14,7 @@ import java.util.Set;
 public class ClientAccept extends Thread {
     private final static int SOCKET_PORT = 8080;
     private final  ServerSocket serverSocket;
-    private final HashMap<User, Object> clientsMap;
+    private final HashMap<String, Object> clientsMap;
     private final JTextArea msgBox;
     private Socket socket;
 
@@ -30,15 +30,16 @@ public class ClientAccept extends Thread {
             while (true) {
                 socket = serverSocket.accept();
                 User newUser = createNewUser(socket);
-
-                if (clientsMap.containsKey(newUser)) {
+               // String userNameCheck = new DataInputStream(socket.getInputStream()).readUTF();
+                if (clientsMap.containsKey(newUser.getName())) {
                     DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
-                    dout.writeUTF("Jesteś już zarejestrowany");
+                    dout.writeUTF("AlreadyRegistered");
                 } else {
-                    clientsMap.put(newUser, socket);
+                    clientsMap.put(newUser.getName(), socket);
                     msgBox.append(newUser.getName() + " dołączył(a)! \n");
                     DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
-                    sendListUser(newUser, dout);
+                    System.out.println("DOUT w ClientAccept");
+                    sendListUser(dout);
                     new MsgRead(socket, newUser, msgBox).start();
                     System.out.println("client accept " + newUser + " ----- " + socket);
                     socket.close();
@@ -54,11 +55,23 @@ public class ClientAccept extends Thread {
         return new User(userName);
     }
 
-    private void sendListUser(final User newUser, final DataOutputStream dout) throws IOException {
-        Set<User> clientKeySet = clientsMap.keySet();
-        for (User o : clientKeySet) {
-            dout.writeUTF("user:" + newUser.getName());
+    private void sendListUser(final DataOutputStream dout) throws IOException {
+        Set<String> clientKeySet = clientsMap.keySet();
+//        String list="";
+//        for (String name : clientKeySet) {
+//            list=list+name+",";
+//        }
+//        if(list.endsWith(",")){
+//            list=list.substring(0,list.length()-1);
+//        }
+
+        for(String name:clientKeySet){
+            dout.writeUTF("user:" + name+"testClientAccept");
+            System.out.println("TEST W FOR: "+name);
         }
+
+       // System.out.println(list);
+        //dout.writeUTF("user:" + list);
     }
 
     /*private void createDataOutputStreamForClientMap(User key, User newUser) {
