@@ -30,14 +30,17 @@ public class ClientAccept extends Thread {
             while (true) {
                 socket = serverSocket.accept();
                 User newUser = createNewUser(socket);
+                System.out.println("NEW USER: "+newUser.getName());
                // String userNameCheck = new DataInputStream(socket.getInputStream()).readUTF();
                 if (clientsMap.containsKey(newUser.getName())) {
                     DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
                     dout.writeUTF("AlreadyRegistered");
                 } else {
+                    DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
+                    dout.writeUTF("unRegistered");
                     clientsMap.put(newUser.getName(), socket);
                     msgBox.append(newUser.getName() + " dołączył(a)! \n");
-                    DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
+                  //  DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
                     System.out.println("DOUT w ClientAccept");
                     sendListUser(dout);
                     new MsgRead(socket, newUser, msgBox).start();
@@ -51,7 +54,7 @@ public class ClientAccept extends Thread {
     }
 
     private User createNewUser(final Socket socket) throws IOException {
-        String userName = new DataInputStream(this.socket.getInputStream()).readUTF();
+        String userName = new DataInputStream(socket.getInputStream()).readUTF();
         return new User(userName);
     }
 

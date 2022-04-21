@@ -33,9 +33,17 @@ public class Client extends JFrame {
             userList.setModel(dlm);
             labelName.setText(id);
             din = new DataInputStream(socket.getInputStream());
-            dout = new DataOutputStream(socket.getOutputStream());
+           // if(din.readUTF().isEmpty()) System.out.println("DIN PUSTY");
+//while(true){
+//    try{
+//        System.out.println(din.readUTF());
+//        break;
+//    }catch(Exception ex){
+//        continue;
+//    }
+//}
             new Read().start();
-
+            dout = new DataOutputStream(socket.getOutputStream());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -87,6 +95,8 @@ public class Client extends JFrame {
             while (true) {
                 try {
                   //  System.out.println("TRY w RUN w Client");
+                  //  while(din.readUTF().isEmpty())
+                   sleep(1000);
                     String message = din.readUTF();
                     System.out.println("Message z Client: "+message);
                     if (message.startsWith("user:")) {
@@ -109,7 +119,7 @@ public class Client extends JFrame {
                         msgBox.append("" + message + "\n");
                     }
                 } catch (Exception ex) {
-//                    ex.printStackTrace();
+                  //  ex.printStackTrace();
                     break;
                 }
             }
